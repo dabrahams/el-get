@@ -2320,9 +2320,7 @@ with the named PACKAGE"
   "Where the currently primed autoload timer (if any) is stored")
 
 (defun el-get-want-autoloads-p (package)
-  (let ((source (el-get-package-def package)))
-    (or (not (plist-member source :autoloads))
-        (eq (plist-get source :autoloads) t))))
+  (plist-get (el-get-package-def package) :autoloads))
 
 (defun el-get-invalidate-autoloads ( &optional package )
   "Mark the named PACKAGE as needing new autoloads.  If PACKAGE
