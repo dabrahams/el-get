@@ -642,8 +642,10 @@ definition provided by `el-get' recipes locally.
 :type
 
     The type of the package, currently el-get offers support for
-    `apt-get', `elpa', `git' and `http'. You can easily support
-    your own types here, see the variable `el-get-methods'.
+    `apt-get', `elpa', `git', `emacsmirror', `git-svn', `bzr' `svn',
+    `cvs', `darcs', `fink', `ftp', `emacswiki', `http-tar', `pacman',
+    `hg' and `http'. You can easily support your own types here, 
+    see the variable `el-get-methods'.
 
 :branch
 
@@ -1901,7 +1903,7 @@ the recipe, then return nil."
   "return a suitable filename from given url
 
 Test url: http://repo.or.cz/w/ShellArchive.git?a=blob_plain;hb=HEAD;f=ack.el"
-  (replace-regexp-in-string "[^a-zA-Z0-9-_\.]" "_"
+  (replace-regexp-in-string "[^a-zA-Z0-9-_\.\+]" "_"
 			    (file-name-nondirectory url)))
 
 (defun el-get-http-retrieve-callback (status package post-install-fun &optional dest sources)
@@ -3069,9 +3071,8 @@ entry which is not a symbol and is not already a known recipe."
 ;; notify user with emacs notifications API (new in 24)
 ;;
 (when (and (eq system-type 'darwin)
-	   (not (fboundp 'growl))
 	   (file-executable-p el-get-growl-notify))
-  (defun growl (title message)
+  (defun el-get-growl (title message)
     "Send a message to growl, that implements notifications for darwin"
     (let* ((name  "*growl*")
 	   (proc
@@ -3098,7 +3099,7 @@ entry which is not a symbol and is not already a known recipe."
   (cond ((fboundp 'notifications-notify) (notifications-notify :title title
 							       :body message))
 	((fboundp 'notify)               (notify title message))
-	((fboundp 'growl)                (growl title message))
+	((fboundp 'el-get-growl)         (el-get-growl title message))
 	(t                               (message "%s: %s" title message))))
 
 (when (or (fboundp 'notifications-notify) (fboundp 'notify) (fboundp 'growl))
